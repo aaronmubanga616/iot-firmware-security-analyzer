@@ -3,10 +3,17 @@
 A Python framework for static security research on legally acquired Linux router
 and IoT firmware. OWASP IoTGoat is the planned initial research target.
 
-**Status: foundation / pre-alpha.** The installed CLI provides help, version and
-project information. Firmware identification, extraction, detection rules and
-report generation are planned; they are not implemented in this release. No
-firmware has been analyzed and no vulnerability findings are claimed.
+**Status: metadata inspection / pre-alpha.** Inspect a local firmware file for
+size, SHA-256, signature observations and reliable outer ELF architecture
+metadata. Export structured JSON, with optional installed Binwalk 3 identification
+on Linux. Extraction, inventories, security rules and HTML/Markdown remain planned.
+No real firmware research or vulnerability findings are claimed.
+
+```sh
+iotfw inspect firmware/sample.bin --output reports/metadata.json
+```
+
+See [inspection usage, supported signatures and limitations](docs/inspection.md).
 
 ## Quick start
 
@@ -24,6 +31,7 @@ python3 -m venv .venv
 .venv/bin/iot-firmware-analyzer --help
 .venv/bin/iot-firmware-analyzer --version
 .venv/bin/iot-firmware-analyzer about
+.venv/bin/iotfw inspect --help
 .venv/bin/python -m pytest
 ```
 
@@ -35,6 +43,7 @@ py -3 -m venv .venv
 .\.venv\Scripts\iot-firmware-analyzer.exe --help
 .\.venv\Scripts\iot-firmware-analyzer.exe --version
 .\.venv\Scripts\iot-firmware-analyzer.exe about
+.\.venv\Scripts\iotfw.exe inspect --help
 .\.venv\Scripts\python.exe -m pytest
 ```
 
@@ -50,11 +59,11 @@ successfully. Invalid arguments exit with code 2.
 src/iot_firmware_analyzer/
     __init__.py          Package version
     __main__.py          Python module entry point
-    core/                CLI; future configuration and orchestration
-    firmware/            Future identification, metadata, hashing, extraction
+    core/                CLI, limits, sanitized errors and orchestration
+    firmware/            Streaming hashing, signatures, ELF metadata, Binwalk adapter
     analysis/            Future ELF, filesystem, package and service inventories
     security/            Future candidate findings and detection rules
-    reporting/           Future JSON, HTML and Markdown reports
+    reporting/           JSON metadata export; future HTML and Markdown reports
 tests/
     unit/                CLI and package behavior
     integration/         Installed entry points, local synthetic inputs
@@ -63,8 +72,7 @@ docs/                    Architecture, safety, roadmap and research templates
 .github/workflows/       Automated installation and tests
 ```
 
-Only `core` contains application behavior in this stage. The other subpackages
-establish clear boundaries for later implementation. See
+`analysis` and `security` remain package boundaries for later stages. See
 [architecture](docs/architecture.md) and the [development roadmap](docs/roadmap.md).
 The [foundation record](docs/foundation.md) explains each created file and records
 the actual local verification results.
@@ -80,8 +88,10 @@ the actual local verification results.
 - Do not automatically exploit vulnerabilities or contact target devices.
 - Keep firmware, extracted data, Ghidra projects and sensitive reports outside Git.
 
-The current CLI performs no network requests and does not open firmware files or
-invoke external tools. `.gitignore` helps prevent accidental additions; review
+The current CLI reads regular firmware files without executing them. It performs
+no network requests. Only `--binwalk` invokes an external parser, under Linux
+resource limits, with no extraction flags. Reports omit input filenames, raw
+contents and raw tool descriptions. `.gitignore` helps prevent accidental additions; review
 every staged change because ignore patterns cannot identify every sensitive file.
 See [the safety model](docs/safety.md) and [security reporting policy](SECURITY.md).
 
@@ -92,19 +102,18 @@ Add tests using synthetic data for each implemented capability. Keep work in
 reviewable commits for each stage. Contributor and assistant instructions are in
 [AGENTS.md](AGENTS.md); see [CONTRIBUTING.md](CONTRIBUTING.md) for the workflow.
 
-GitHub Actions is configured to install the package, exercise the CLI and run tests
+GitHub Actions is configured to install the package, exercise both CLI names and run tests
 on Linux with Python 3.11–3.13 and Windows with Python 3.13. A configured workflow
 is not evidence of a successful run; use the actual Actions results.
 
 ## Next stage
 
-Implement read-only firmware intake: bounded file inspection, size, SHA-256 and
-conservative identification from header bytes. Test synthetic files, invalid
-paths and resource limits before adding extraction. Binwalk 3 integration,
-isolated extraction, inventories, candidate findings, reports and manual Ghidra
-research follow in separate stages.
+Design and test isolated extraction: containment, hostile paths and links,
+expanded-size/file-count limits, timeouts and supported tool behavior. Metadata
+intake and the optional signature-only Binwalk adapter are implemented. Inventories,
+candidate findings, HTML/Markdown and manual Ghidra research follow separately.
 
-Binwalk 3 and Ghidra are not needed or installed by this foundation. IoTGoat
+Binwalk 3 and Ghidra are not required or automatically installed. IoTGoat
 downloads must be separately approved; firmware and extracted content will not
 be included in this repository.
 

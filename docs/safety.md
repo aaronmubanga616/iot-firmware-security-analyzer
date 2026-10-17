@@ -2,10 +2,13 @@
 
 ## Current boundary
 
-The foundation CLI only renders built-in help and project information. It does
-not read firmware, extract files, execute external programs, access the network
-or generate vulnerability findings. Installing development dependencies and
-publishing to GitHub are separate, explicitly approved network operations.
+The CLI supports bounded read-only metadata inspection and JSON export, plus
+help/version/project information. It does not extract files, execute firmware,
+access the network or generate vulnerability findings. An explicit `--binwalk`
+request can run an installed signature parser on Linux with child resource
+limits. See [the inspection safety boundary and its limits](inspection.md).
+Installing dependencies and publishing to GitHub remain separately approved
+network operations.
 
 ## Requirements for later stages
 

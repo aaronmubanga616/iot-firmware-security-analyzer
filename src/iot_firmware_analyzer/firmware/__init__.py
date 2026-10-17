@@ -1,1 +1,1 @@
-"""Boundary for future format identification, metadata, hashes and extraction."""
+"""Streaming metadata, conservative signatures and optional Binwalk identification."""

@@ -12,11 +12,11 @@ def test_no_arguments_displays_help(capsys: pytest.CaptureFixture[str]) -> None:
     output = capsys.readouterr()
     assert "usage: iot-firmware-analyzer" in output.out
     assert "about" in output.out
-    assert "not implemented" in output.out
+    assert "inspect" in output.out
     assert output.err == ""
 
 
-@pytest.mark.parametrize("arguments", [["--help"], ["-h"], ["about", "--help"]])
+@pytest.mark.parametrize("arguments", [["--help"], ["-h"], ["about", "--help"], ["inspect", "--help"]])
 def test_help_exits_successfully(
     arguments: list[str], capsys: pytest.CaptureFixture[str]
 ) -> None:
@@ -48,8 +48,8 @@ def test_about_describes_scope_and_safeguards(
     assert main(["about"]) == 0
     output = capsys.readouterr()
     assert PROJECT_NAME in output.out
-    assert "foundation / pre-alpha" in output.out
-    assert "does not process firmware" in output.out
+    assert "metadata inspection / pre-alpha" in output.out
+    assert "does not extract firmware" in output.out
     assert "unverified until manually validated" in output.out
     assert "Never execute extracted firmware binaries" in output.out
     assert "Never print actual credentials" in output.out
@@ -92,6 +92,21 @@ def test_rejected_arguments_are_not_echoed(
     arguments: list[str], capsys: pytest.CaptureFixture[str]
 ) -> None:
     """Error output does not expose potentially sensitive argument values."""
+    with pytest.raises(SystemExit) as result:
+        main(arguments)
+    assert result.value.code == 2
+    output = capsys.readouterr()
+    assert "SYNTHETIC_SENSITIVE_MARKER" not in output.out + output.err
+
+
+@pytest.mark.parametrize("arguments", [
+    ["inspect"], ["inspect", "fixture", "--timeout", "nan"],
+    ["inspect", "fixture", "--timeout", "inf"], ["inspect", "fixture", "--timeout", "0"],
+    ["inspect", "fixture", "--max-size-mib", "-1"],
+    ["inspect", "fixture", "--max-size-mib", "16385"],
+    ["inspect", "fixture", "--timeout", "SYNTHETIC_SENSITIVE_MARKER"],
+])
+def test_invalid_inspection_options(arguments: list[str], capsys: pytest.CaptureFixture[str]) -> None:
     with pytest.raises(SystemExit) as result:
         main(arguments)
     assert result.value.code == 2

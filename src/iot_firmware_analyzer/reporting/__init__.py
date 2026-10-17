@@ -1,1 +1,1 @@
-"""Boundary for future structured JSON and sanitized HTML/Markdown reporting."""
+"""Structured JSON metadata export and a boundary for future HTML/Markdown."""

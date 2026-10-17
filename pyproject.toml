@@ -30,6 +30,7 @@ dependencies = []
 dev = ["pytest>=8.3,<10"]
 
 [project.scripts]
+iotfw = "iot_firmware_analyzer.core.cli:main"
 iot-firmware-analyzer = "iot_firmware_analyzer.core.cli:main"
 
 [tool.setuptools.packages.find]

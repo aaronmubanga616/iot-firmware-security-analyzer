@@ -3,15 +3,15 @@
 Build one stage at a time. Document actual verification separately from planned
 work; this roadmap is not a test result or a claim of implemented analysis.
 
-1. **Foundation (this stage):** package layout, dependency-free help/version/about
+1. **Foundation (implemented):** package layout, dependency-free help/version/about
    CLI, developer environment, synthetic-test policy, initial tests, GitHub
    Actions and safety documentation.
-2. **Read-only firmware intake (next):** validate regular-file inputs without
-   executing them; stream SHA-256, record size and bounded header observations;
-   conservatively recognize a small documented set of formats. Test empty,
-   unknown, truncated, oversized and unreadable inputs. Recognized headers are
-   observations, not proof that an entire image is valid. Do not extract yet.
-3. **Approved tool integration and extraction:** verify Binwalk 3 behavior;
+2. **Read-only firmware intake (implemented):** bounded regular-file input,
+   streaming SHA-256, file size, raw signatures, consistent outer ELF metadata,
+   JSON export and optional resource-limited Binwalk 3 identification. Synthetic
+   tests cover empty, unknown, truncated, malformed, oversized, changed and
+   unreadable inputs. Header observations do not prove image validity.
+3. **Isolated extraction (next):** verify live installed Binwalk 3 behavior;
    design isolation, link/path containment, resource limits, timeouts and clear
    unsupported-format errors. Add synthetic hostile extraction fixtures before
    testing approved research images.

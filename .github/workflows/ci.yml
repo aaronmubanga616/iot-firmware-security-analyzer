@@ -1,4 +1,4 @@
-name: Foundation checks
+name: Static inspection checks
 
 on:
   push:
@@ -37,5 +37,7 @@ jobs:
         run: python -m pip install --editable ".[dev]"
       - name: Check installed CLI
         run: iot-firmware-analyzer --help
+      - name: Check short inspection command
+        run: iotfw inspect --help
       - name: Run unit and integration tests
         run: python -m pytest

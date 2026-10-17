@@ -1,1 +1,1 @@
-"""Application entry points and future configuration and orchestration."""
+"""Application entry points, resource configuration and inspection orchestration."""
