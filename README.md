@@ -66,6 +66,8 @@ docs/                    Architecture, safety, roadmap and research templates
 Only `core` contains application behavior in this stage. The other subpackages
 establish clear boundaries for later implementation. See
 [architecture](docs/architecture.md) and the [development roadmap](docs/roadmap.md).
+The [foundation record](docs/foundation.md) explains each created file and records
+the actual local verification results.
 
 ## Research safeguards
 
